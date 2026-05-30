@@ -15,6 +15,14 @@ metadata:
 
 Read `~/.config/user-identity.yaml` to learn who the user is and how they prefer to work. This file follows a standard format that any AI agent (Hermes, OpenClaw, Cursor, etc.) can consume.
 
+## Loading
+
+**No manual loading required.** The identity file at `~/.config/user-identity.yaml` should be read at session start by any agent, regardless of whether this skill is loaded. The file itself contains a policy header that tells the agent how to handle it.
+
+**By Hermes:** Read the file at conversation start if it exists. The skill is only needed for advanced features (discovery scanning, write management).
+
+**By other agents (OpenClaw, Cursor):** Read the YAML file directly. The policy header is self-explanatory.
+
 ## File Location
 
 ```
