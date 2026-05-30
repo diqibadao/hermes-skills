@@ -1,13 +1,13 @@
 ---
 name: user-identity
-description: "Universal user identity card — read who the user is, how they prefer to work, and which tools/services they use. Designed for cross-platform use: Hermes, OpenClaw, Cursor, Claude Code, and any AI agent can consume the same file."
+description: "一份身份档案，所有 AI Agent 都认识你。自动收集你的称呼、偏好、工具、工作方式，Hermes / OpenClaw / Cursor 跨平台共享。对话中持续学习，越用越懂你。"
 version: 1.0.0
 author: diqibadao
 license: MIT
 platforms: [macos, linux]
 metadata:
   hermes:
-    tags: [identity, profile, user, preferences, cross-platform]
+    tags: [identity, profile, preferences, cross-platform, auto-learn, user-card]
     category: devops
 ---
 
@@ -105,7 +105,9 @@ field_name:
 - `status` — `current` (active), `outdated` (superseded), `replaced` (replaced by newer), `unverified` (not confirmed yet)
 - `note` — optional human-readable note
 
-This lets the agent judge which info is still relevant without needing a cleanup mechanism. For a condensed quick-reference, see `references/identity-schema.md`.
+This lets the agent judge which info is still relevant without needing a cleanup mechanism.
+
+For the full schema specification, load `skill_view("user-identity", "references/schema-format.md")`. For a condensed quick-reference, see `references/identity-schema.md`.
 
 ### Write Procedure
 
