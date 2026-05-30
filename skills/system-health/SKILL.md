@@ -1,13 +1,13 @@
 ---
 name: system-health
-description: "Monitor your Hermes Agent system health — check model config, hindsight memory daemon, tools availability, gateway process, disk space, external connectivity, and all profile configs. Auto-remediates common issues. Generates structured daily reports with change tracking. Configurable delivery and modular checks."
+description: "一键掌握 Hermes 系统健康状况。自动检测 6 层状态（模型/记忆/工具/系统/连接/Profile），发现问题自动修复，生成可视化日报。支持自定义推送目标、检测模块和报告频率。"
 version: 1.0.0
 author: diqibadao
 license: MIT
 platforms: [macos, linux]
 metadata:
   hermes:
-    tags: [devops, monitoring, health, system, daily-report, diagnostics, remediation]
+    tags: [devops, monitoring, health-check, diagnostics, auto-repair, daily-report, system-status]
     category: devops
     requires_toolsets: [terminal]
     config:
@@ -179,4 +179,5 @@ hermes config set skills.config.health.schedule "0 9 * * *"
 1. **First run has no event baseline** — run the health check twice to see change tracking
 2. **Delivery to unconfigured platform fails silently** — check `skills.config.health.deliver`
 3. **skips profiles in non-standard paths** — only scans `~/.hermes/profiles/*/`
-4. **Rate-limited on push platforms** — reduce `health.max_daily_reports` if hitting limits
+5. **Fresh install test needed** — after development, simulate a new user installation: clean the environment, install fresh, verify the first-run config prompts, and check the output format. Don't assume your development environment represents what users will see.
+6. **Rate-limited on push platforms** — reduce `health.max_daily_reports` if hitting limits
