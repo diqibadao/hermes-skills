@@ -27,7 +27,7 @@ The identity file at `~/.config/user-identity.yaml` must be loaded at **every se
 | Other Hermes profiles | SOUL.md has a "必读" section at top | ✅ Patched |
 | OpenClaw | Must check `~/.config/user-identity.yaml` at startup | ❌ Not yet implemented |
 | Cursor / Claude Code | Reference file in project rules | ⚠️ Manual setup needed |
-| Any shell-based agent | `$USER_IDENTITY` env var set in `~/.profile` | ✅ Available |
+| Any shell-based agent | Environment variable pointing to the identity file | ✅ Available |
 
 **The policy header inside the YAML file itself** tells any agent that reads it what to do — see the `# -------- 元信息（agent 必读）--------` block at the top of the file. This is self-documenting: even without this skill, an agent that reads the file sees the rules.
 
@@ -85,7 +85,7 @@ Key fields to pay attention to:
 **Rules:**
 - **Read** — always allowed. Any agent on this machine can read the identity.
 - **Write** — only through the identity management tool or explicit user command. Never modify the file directly without logging the change in `changelog`.
-- **Secrets** — API keys and tokens are stored in `~/.hermes/.env` (or the platform's equivalent), never in the identity file. The identity file only references them by env var name.
+- **Secrets** — Credentials and tokens are stored in a separate secure location (e.g., the platform's secrets file), never in the identity file. The identity file only references them by variable name.
 
 ## Writing / Updating
 
