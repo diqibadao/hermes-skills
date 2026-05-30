@@ -15,13 +15,23 @@ metadata:
 
 Read `~/.config/user-identity.yaml` to learn who the user is and how they prefer to work. This file follows a standard format that any AI agent (Hermes, OpenClaw, Cursor, etc.) can consume.
 
-## Loading
+## Loading — Auto-Load Contract
 
-**No manual loading required.** The identity file at `~/.config/user-identity.yaml` should be read at session start by any agent, regardless of whether this skill is loaded. The file itself contains a policy header that tells the agent how to handle it.
+The identity file at `~/.config/user-identity.yaml` must be loaded at **every session start** by any agent on this machine. It is not an on-demand skill — it is foundational infrastructure.
 
-**By Hermes:** Read the file at conversation start if it exists. The skill is only needed for advanced features (discovery scanning, write management).
+**How each platform auto-loads:**
 
-**By other agents (OpenClaw, Cursor):** Read the YAML file directly. The policy header is self-explanatory.
+| Platform | Mechanism | Status |
+|----------|-----------|--------|
+| Hermes (default) | Agent memory stores the instruction | ✅ Active |
+| Other Hermes profiles | SOUL.md has a "必读" section at top | ✅ Patched |
+| OpenClaw | Must check `~/.config/user-identity.yaml` at startup | ❌ Not yet implemented |
+| Cursor / Claude Code | Reference file in project rules | ⚠️ Manual setup needed |
+| Any shell-based agent | `$USER_IDENTITY` env var set in `~/.profile` | ✅ Available |
+
+**The policy header inside the YAML file itself** tells any agent that reads it what to do — see the `# -------- 元信息（agent 必读）--------` block at the top of the file. This is self-documenting: even without this skill, an agent that reads the file sees the rules.
+
+For the formal cross-platform standard, see `references/auto-loading.md`.
 
 ## File Location
 
@@ -80,6 +90,24 @@ Key fields to pay attention to:
 ## Writing / Updating
 
 When the user asks to update their identity:
+
+Every value in the identity file follows this structure:
+
+```yaml
+field_name:
+  value: "actual value"
+  collected_at: "2026-05-30"
+  status: current   # current / outdated / replaced / unverified
+  note: "optional context"
+```
+
+- `collected_at` — ISO date when collected or last confirmed
+- `status` — `current` (active), `outdated` (superseded), `replaced` (replaced by newer), `unverified` (not confirmed yet)
+- `note` — optional human-readable note
+
+This lets the agent judge which info is still relevant without needing a cleanup mechanism. For a condensed quick-reference, see `references/identity-schema.md`.
+
+### Write Procedure
 
 1. Read the current file
 2. Parse the requested change
@@ -173,7 +201,7 @@ In addition to real-time discovery during conversation, the identity can be enri
 |-------|---------------|-------------------|
 | `PATH` scan | New binaries not in identity | `aider`, `docker`, `code` |
 | Config scan | New providers/tools in `config.yaml` | New model provider, new MCP server |
-| Profile scan | New Hermes profiles | `xiaoming`, `model-trainer` |
+| Profile scan | New Hermes profiles | `other-profile`, `work-profile` |
 | Service scan | New listening ports, known services | New proxy, new database |
 | Brew scan (macOS) | Newly installed formulae | `brew list --installed` |
 
@@ -191,12 +219,31 @@ The script outputs a list of suggested changes in a structured format that you (
 [SUGGEST] tool:aider — found in PATH, not in identity
 [SUGGEST] service:docker — found in PATH, not in identity
 [SUGGEST] config:model.provider — currently deepseek, identity has none
-[INFO] profile:xiaoming — already in identity
+[INFO] profile:work-profile — already in identity
 ```
 
 You then ask the user: "环境扫描发现了一些新工具，要不要更新身份卡？"
 
-## Quick Reference
+## Publishing Standard
+
+Every skill published to `diqibadao/hermes-skills` must include:
+
+| Required | Description |
+|----------|-------------|
+| README.md | What it does, features, install, usage, configuration, examples |
+| SKILL.md | Full frontmatter with config keys, when-to-use, procedures, pitfalls, verification |
+| scripts/ or templates/ | Runnable scripts or boilerplate configs |
+
+**Quality checklist before publishing:**
+- [ ] README explains what the skill does in 1-2 sentences up front
+- [ ] Features listed in a table or bullet list
+- [ ] Install instructions are copy-pasteable
+- [ ] Usage examples show expected output
+- [ ] Configuration keys documented with defaults
+- [ ] Common pitfalls listed
+- [ ] Tested on a clean environment (simulate fresh install)
+
+**Standard enforced by:** author diqibadao, verified by reviewer.
 
 ```bash
 # View identity
